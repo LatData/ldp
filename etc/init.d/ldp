@@ -1,0 +1,35 @@
+#!/bin/bash -l
+### BEGIN INIT INFO
+# Provides: ldp
+# Required-Start: $syslog
+# Required-Stop: 
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Description: ldp meta service
+### END INIT INFO
+
+SERVICE_NAME=ldp
+PID_PATH_NAME=/tmp/ldp
+SERVICES=(ldp-zookeeper-l ldp-kafka-l ldp-flume-l ldp-zookeeper-f ldp-kafka-f ldp-flume-f ldp-zookeeper-p ldp-kafka-p ldp-flume-p)
+
+case $1 in
+    start)
+        $LDP_HOME/tools/purguekafka.sh
+	$LDP_HOME/tools/truncatelogs.sh
+	for i in "${SERVICES[@]}"
+	do
+        	su ldp -s /bin/bash -c "$LDP_HOME/etc/init.d/$i start"
+		sleep 2
+	done
+    ;;
+    stop)
+	for (( idx=${#SERVICES[@]}-1 ; idx>=0 ; idx-- ))
+	do
+        	su ldp -s /bin/bash -c "$LDP_HOME/etc/init.d/${SERVICES[idx]} stop"
+		sleep 2
+	done
+	rm -rdf /tmp/ldp-*
+	rm -rdf /tmp/libre2*
+    ;;
+
+esac 

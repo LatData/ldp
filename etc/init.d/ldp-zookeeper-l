@@ -1,0 +1,52 @@
+#!/bin/sh -l
+### BEGIN INIT INFO
+# Provides: ldp-zookeeper-l
+# Required-Start: $syslog
+# Required-Stop: $ldp-kafka-l
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Description: ldp zookeeper listener
+### END INIT INFO
+
+SERVICE_NAME=ldp-zookeeper-l
+PID_PATH_NAME=/tmp/ldp-zookeeper-l-pid
+
+export ZOO_LOG_DIR="$LDP_HOME/logs/ldp-zookeeper-l"
+export JVMFLAGS="$LDP_ZOOKEEPER_JVM_OPTS -XX:+UseParNewGC -XX:+UseConcMarkSweepGC"
+
+case $1 in
+    start)
+        echo "Starting $SERVICE_NAME ..."
+        if [ ! -f $PID_PATH_NAME ]; then
+            nohup $LDP_ZOOKEEPER_HOME/bin/zkServer.sh start $LDP_HOME/conf/ldp-zookeeper/ldp-zookeeper-l.cfg 2>> /dev/null >> /dev/null & echo $! > $PID_PATH_NAME
+            echo "$SERVICE_NAME started ..."
+        else
+            echo "$SERVICE_NAME is already running ..."
+        fi
+    ;;
+    stop)
+        if [ -f $PID_PATH_NAME ]; then
+            PID=$(cat $PID_PATH_NAME);
+            echo "$SERVICE_NAME stoping ..."
+            nohup $LDP_ZOOKEEPER_HOME/bin/zkServer.sh stop $LDP_HOME/conf/ldp-zookeeper/ldp-zookeeper-l.cfg 2>> /dev/null >> /dev/null
+            echo "$SERVICE_NAME stopped ..."
+            rm $PID_PATH_NAME
+        else
+            echo "$SERVICE_NAME is not running ..."
+        fi
+    ;;
+    restart)
+        if [ -f $PID_PATH_NAME ]; then
+            PID=$(cat $PID_PATH_NAME);
+            echo "$SERVICE_NAME stopping ...";
+            nohup $LDP_ZOOKEEPER_HOME/bin/zkServer.sh stop $LDP_HOME/conf/ldp-zookeeper/ldp-zookeeper-l.cfg 2>> /dev/null >> /dev/null
+            echo "$SERVICE_NAME stopped ...";
+            rm $PID_PATH_NAME
+            echo "$SERVICE_NAME starting ..."
+            nohup $LDP_ZOOKEEPER_HOME/bin/zkServer.sh start $LDP_HOME/conf/ldp-zookeeper/ldp-zookeeper-l.cfg 2>> /dev/null >> /dev/null & echo $! > $PID_PATH_NAME
+            echo "$SERVICE_NAME started ..."
+        else
+            echo "$SERVICE_NAME is not running ..."
+        fi
+    ;;
+esac 

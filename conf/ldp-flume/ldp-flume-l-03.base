@@ -1,0 +1,87 @@
+#Define the sources, channels and sinks
+ldp-flume-l-03.sources = src_nc_01
+ldp-flume-l-03.channels = chan_01 chan_02 chan_03 chan_04
+ldp-flume-l-03.sinks = sink_01 sink_02 sink_03 sink_04
+
+#Configure the sources
+ldp-flume-l-03.sources.src_nc_01.type = com.latdata.collect.source.NetcatSource
+ldp-flume-l-03.sources.src_nc_01.bind = 0.0.0.0
+ldp-flume-l-03.sources.src_nc_01.port = 9903
+ldp-flume-l-03.sources.src_nc_01.max-line-length = 12000
+ldp-flume-l-03.sources.src_nc_01.ack-every-event = false
+ldp-flume-l-03.sources.src_nc_01.pathfilecmdb = ${LDP_HOME}/resources/cmdb_ip-extraData.csv
+ldp-flume-l-03.sources.src_nc_01.sourcetype = oracle
+ldp-flume-l-03.sources.src_nc_01.useextradata = true
+ldp-flume-l-03.sources.src_nc_01.usesourceip = false
+ldp-flume-l-03.sources.src_nc_01.channels = chan_01 chan_02 chan_03 chan_04
+ldp-flume-l-03.sources.src_nc_01.selector.type = com.latdata.collect.channelselector.RoundRobinChannelSelector
+
+# Configurating the channels
+ldp-flume-l-03.channels.chan_01.type = memory
+ldp-flume-l-03.channels.chan_01.capacity = 100000
+ldp-flume-l-03.channels.chan_01.transactionCapacity = 400
+
+ldp-flume-l-03.channels.chan_02.type = memory
+ldp-flume-l-03.channels.chan_02.capacity = 100000
+ldp-flume-l-03.channels.chan_02.transactionCapacity = 400
+
+ldp-flume-l-03.channels.chan_03.type = memory
+ldp-flume-l-03.channels.chan_03.capacity = 100000
+ldp-flume-l-03.channels.chan_03.transactionCapacity = 400
+
+ldp-flume-l-03.channels.chan_04.type = memory
+ldp-flume-l-03.channels.chan_04.capacity = 100000
+ldp-flume-l-03.channels.chan_04.transactionCapacity = 400
+
+
+##Configure the sinks
+ldp-flume-l-03.sinks.sink_01.type = com.latdata.collect.sink.KafkaSink
+ldp-flume-l-03.sinks.sink_01.channel = chan_01
+ldp-flume-l-03.sinks.sink_01.kafka.topic = flumel
+ldp-flume-l-03.sinks.sink_01.kafka.bootstrap.servers = localhost:9092
+ldp-flume-l-03.sinks.sink_01.writeBody = true
+ldp-flume-l-03.sinks.sink_01.kafka.topic.metadata.refresh.interval.ms = 2500
+ldp-flume-l-03.sinks.sink_01.kafka.serializer.class = kafka.serializer.StringEncoder
+ldp-flume-l-03.sinks.sink_01.batch-size = 200
+ldp-flume-l-03.sinks.sink_01.kafka.producer.acks = 0
+#flumel02.sinks.sink_01.request-timeout = 60000
+#flumel02.sinks.sink_01.maxIoWorkers = 16
+
+
+ldp-flume-l-03.sinks.sink_02.type = com.latdata.collect.sink.KafkaSink
+ldp-flume-l-03.sinks.sink_02.channel = chan_02
+ldp-flume-l-03.sinks.sink_02.kafka.topic = flumel
+ldp-flume-l-03.sinks.sink_02.kafka.bootstrap.servers = localhost:9092 
+ldp-flume-l-03.sinks.sink_02.writeBody = true
+ldp-flume-l-03.sinks.sink_02.kafka.topic.metadata.refresh.interval.ms = 2500
+ldp-flume-l-03.sinks.sink_02.kafka.serializer.class = kafka.serializer.StringEncoder
+ldp-flume-l-03.sinks.sink_02.batch-size = 200
+ldp-flume-l-03.sinks.sink_02.kafka.producer.acks = 0
+#flumel02.sinks.sink_01.request-timeout = 60000
+#flumel02.sinks.sink_01.maxIoWorkers = 16
+
+ldp-flume-l-03.sinks.sink_03.type = com.latdata.collect.sink.KafkaSink
+ldp-flume-l-03.sinks.sink_03.channel = chan_03
+ldp-flume-l-03.sinks.sink_03.kafka.topic = flumel
+ldp-flume-l-03.sinks.sink_03.kafka.bootstrap.servers = localhost:9092 
+ldp-flume-l-03.sinks.sink_03.writeBody = true
+ldp-flume-l-03.sinks.sink_03.kafka.topic.metadata.refresh.interval.ms = 2500
+ldp-flume-l-03.sinks.sink_03.kafka.serializer.class = kafka.serializer.StringEncoder
+ldp-flume-l-03.sinks.sink_03.batch-size = 200
+ldp-flume-l-03.sinks.sink_03.kafka.producer.acks = 0
+#flumel02.sinks.sink_01.request-timeout = 60000
+#flumel02.sinks.sink_01.maxIoWorkers = 16
+
+
+ldp-flume-l-03.sinks.sink_04.type = com.latdata.collect.sink.KafkaSink
+ldp-flume-l-03.sinks.sink_04.channel = chan_04
+ldp-flume-l-03.sinks.sink_04.kafka.topic = flumel
+ldp-flume-l-03.sinks.sink_04.kafka.bootstrap.servers = localhost:9092 
+ldp-flume-l-03.sinks.sink_04.writeBody = true
+ldp-flume-l-03.sinks.sink_04.kafka.topic.metadata.refresh.interval.ms = 2500
+ldp-flume-l-03.sinks.sink_04.kafka.serializer.class = kafka.serializer.StringEncoder
+ldp-flume-l-03.sinks.sink_04.batch-size = 200
+ldp-flume-l-03.sinks.sink_04.kafka.producer.acks = 0
+#flumel02.sinks.sink_01.request-timeout = 60000
+#flumel02.sinks.sink_01.maxIoWorkers = 16
+

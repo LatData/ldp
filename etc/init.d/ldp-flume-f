@@ -1,0 +1,75 @@
+#!/bin/sh -l
+### BEGIN INIT INFO
+# Provides: ldp-flume-f
+# Required-Start: $syslog
+# Required-Stop: $syslog
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Description: ldp flume filter
+### END INIT INFO
+
+SERVICE_NAME=ldp-flume-f
+PID_PATH_NAME=/tmp/ldp-flume-f-pid
+
+
+
+case $1 in
+    start)
+	echo "LDP_FLUMEF_AGENTS: $LDP_FLUMEF_AGENTS"
+	for i in $(seq -w 01 $LDP_FLUMEF_AGENTS); do
+
+	    sed 's@${LDP_HOME}@'"$LDP_HOME"'@' $LDP_HOME/conf/ldp-flume/ldp-flume-f-$i.base > $LDP_HOME/conf/ldp-flume/ldp-flume-f-$i.conf
+            echo "Starting $SERVICE_NAME-$i ..."
+
+            if [ ! -f $PID_PATH_NAME-$i ]; then
+	        nohup $LDP_FLUME_HOME/bin/flume-ng agent -name ldp-flume-f-$i -f $LDP_HOME/conf/ldp-flume/ldp-flume-f-$i.conf -c $LDP_HOME/conf/ldp-flume -Dflume.log.dir=$LDP_HOME/logs/ldp-flume -Dflume.log.file=ldp-flume-f-$i.log $LDP_FLUME_JVM_OPTS 2>> /dev/null >> /dev/null & echo $! > $PID_PATH_NAME-$i
+                echo "$SERVICE_NAME-$i started ..."
+            else
+                echo "$SERVICE_NAME-$i is already running ..."
+            fi
+	done
+    ;;
+    stop)
+	for i in $(seq -w 01 $LDP_FLUMEF_AGENTS); do
+            if [ -f $PID_PATH_NAME-$i ]; then
+                PID=$(cat $PID_PATH_NAME-$i);
+                echo "$SERVICE_NAME-$i stoping ..."
+                kill -9 $PID;
+                echo "$SERVICE_NAME-$i stopped ..."
+                rm $PID_PATH_NAME-$i
+		rm -rdf $LDP_HOME/conf/ldp-flume/ldp-flume-f*\.conf
+            else
+                echo "$SERVICE_NAME-$i is not running ..."
+            fi
+	done
+    ;;
+    restart)
+	for i in $(seq -w 01 $LDP_FLUMEF_AGENTS); do
+            if [ -f $PID_PATH_NAME-$i ]; then
+                PID=$(cat $PID_PATH_NAME-$i);
+                echo "$SERVICE_NAME-$i stoping ..."
+                kill -9 $PID;
+                echo "$SERVICE_NAME-$i stopped ..."
+                rm $PID_PATH_NAME-$i
+		rm -rdf $LDP_HOME/conf/flume/flumef*\.conf
+            else
+                echo "$SERVICE_NAME-$i is not running ..."
+            fi
+	done
+	echo "Wait 2 sec..." && sleep 2
+	echo "LDP_FLUMEF_AGENTS: $LDP_FLUMEF_AGENTS"
+	for i in $(seq -w 01 $LDP_FLUMEF_AGENTS); do
+
+	    sed 's@${LDP_HOME}@'"$LDP_HOME"'@' $LDP_HOME/conf/flume/flumef$i.base > $LDP_HOME/conf/flume/flumef$i.conf
+            echo "Starting $SERVICE_NAME-$i ..."
+
+            if [ ! -f $PID_PATH_NAME-$i ]; then
+	        nohup $LDP_FLUME_HOME/bin/flume-ng agent -name flumef$i -f $LDP_HOME/conf/flume/flumef$i.conf -c $LDP_HOME/conf/flume -Dflume.log.dir=$LDP_HOME/flume/logs -Dflume.log.file=flumef-$i.log $LDP_FLUME_JVM_OPTS 2>> /dev/null >> /dev/null & echo $! > $PID_PATH_NAME-$i
+
+                echo "$SERVICE_NAME-$i started ..."
+            else
+                echo "$SERVICE_NAME-$i is already running ..."
+            fi
+	done
+    ;;
+esac 

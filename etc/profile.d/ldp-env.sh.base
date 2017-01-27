@@ -1,0 +1,14 @@
+export LDP_HOME=ldplatform_home
+
+export LDP_FLUME_HOME=flume_home
+export LDP_FLUME_JVM_OPTS="-Xms32m -Xmx64m -Dcom.sun.management.jmxremote -XX:+UseParNewGC -XX:+UseConcMarkSweepGC"
+
+export LDP_FLUMEL_AGENTS="03"
+export LDP_FLUMEF_AGENTS="02"
+export LDP_FLUMEP_AGENTS="04"
+
+export LDP_KAFKA_HOME=kafka_home
+export LDP_KAFKA_JVM_OPTS="-Xms128m -Xmx192m"
+
+export LDP_ZOOKEEPER_HOME=zookeeper_home
+export LDP_ZOOKEEPER_JVM_OPTS="-Xms32m -Xmx32m"

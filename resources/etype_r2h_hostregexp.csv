@@ -1,0 +1,3 @@
+"proxy","proxy-proxied",".+\sPROXIED\s.+",".{19}\s+.+?\s+?(.+?)\s.+",".{19}\s+.+?\s+?(.+?)\s.+"
+"proxy","proxy-denied",".+\sDENIED\s.+",".{19}\s+.+?\s+?(.+?)\s.+",".{19}\s+.+?\s+?(.+?)\s.+"
+"proxy","proxy-observed",".+\sOBSERVED\s.+",".{19}\s+.+?\s+?(.+?)\s.+",".{19}\s+.+?\s+?(.+?)\s.+"
